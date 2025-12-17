@@ -19,30 +19,34 @@ button { padding:12px 20px; font-size:16px; cursor:pointer }
 
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
-const TEACHER_ID = "teacher-exam-room-1"; // must match teacher ID
-let peer = new Peer({
-  host: '0.peerjs.com',
-  port: 443,
-  path: '/'
-});
+const TEACHER_ID = "teacher-exam-room-1"; // match the teacher ID exactly
+let peer;
 let localStream;
 
-// When peer is ready
-peer.on('open', id => {
-  console.log("Student ID:", id);
-});
+// Recreate peer if disconnected
+function createStudentPeer() {
+  peer = new Peer();
 
-// Start camera and call teacher
+  peer.on('call', call => call.answer(localStream));
+
+  peer.on('disconnected', () => {
+    console.log("Student disconnected, reconnecting...");
+    peer.reconnect();
+  });
+
+  peer.on('error', err => console.error(err));
+}
+
+// Initial creation
+createStudentPeer();
+
 async function start() {
   localStream = await navigator.mediaDevices.getUserMedia({ video:true, audio:false });
   document.getElementById('cam').srcObject = localStream;
 
-  // Automatically call teacher
+  // Call teacher
   const call = peer.call(TEACHER_ID, localStream);
   call.on('error', err => console.error(err));
-
-  // Allow teacher to call back if needed
-  peer.on('call', call => call.answer(localStream));
 }
 </script>
 
