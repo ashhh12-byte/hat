@@ -51,28 +51,18 @@ const ROOM_ID = "exam-room-1";
 const TEACHER_ID = "teacher-" + ROOM_ID;
 
 // Create teacher peer
-const peer = new Peer(TEACHER_ID);
-
-// Listen for student calls
-peer.on("call", call => {
-  call.answer(); // teacher sends nothing
-
-  // Update video whenever a new stream comes
-  call.on("stream", stream => {
-    const videoEl = document.getElementById("cam");
-    videoEl.srcObject = stream;
-  });
-
-  // Clear video if student disconnects or reloads
-  call.on("close", () => {
-    const videoEl = document.getElementById("cam");
-    videoEl.srcObject = null;
-  });
+const peer = new Peer(TEACHER_ID, {
+  host: '0.peerjs.com',
+  port: 443,
+  path: '/'
 });
 
-peer.on('disconnected', () => {
-  console.log("Teacher disconnected, attempting reconnect...");
-  peer.reconnect();
+// Listen for calls from students
+peer.on("call", call => {
+  call.answer(); // teacher sends nothing
+  call.on("stream", stream => {
+    document.getElementById("cam").srcObject = stream;
+  });
 });
 
 peer.on('error', err => console.error(err));
