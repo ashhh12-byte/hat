@@ -48,24 +48,29 @@ video {
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
 const ROOM_ID = "exam-room-1";
-const TEACHER_ID = "teacher-" + ROOM_ID;
+let peer;
 
-// Create teacher peer
-const peer = new Peer(TEACHER_ID, {
-  host: '0.peerjs.com',
-  port: 443,
-  path: '/'
-});
+// Recreate peer if disconnected
+function createTeacherPeer() {
+  peer = new Peer("teacher-" + ROOM_ID);
 
-// Listen for calls from students
-peer.on("call", call => {
-  call.answer(); // teacher sends nothing
-  call.on("stream", stream => {
-    document.getElementById("cam").srcObject = stream;
+  peer.on("call", call => {
+    call.answer(); // teacher sends nothing
+    call.on("stream", stream => {
+      document.getElementById("cam").srcObject = stream;
+    });
   });
-});
 
-peer.on('error', err => console.error(err));
+  peer.on('disconnected', () => {
+    console.log("Teacher disconnected, reconnecting...");
+    peer.reconnect();
+  });
+
+  peer.on('error', err => console.error(err));
+}
+
+// Initial creation
+createTeacherPeer();
 </script>
 
 </body>
