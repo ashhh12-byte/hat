@@ -1,50 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Auto Click Button</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #111;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<title>Fullscreen Demo</title>
 
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            border: none;
-            border-radius: 8px;
-            background: #ff3b3b;
-            color: white;
-            cursor: pointer;
-        }
+<style>
+  body {
+    margin: 0;
+    background: black;
+    color: red;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 
-        button:hover {
-            background: #ff1f1f;
-        }
-    </style>
+  h1 {
+    animation: blink 1s infinite;
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 16px;
+    background: red;
+    color: black;
+    border: none;
+    cursor: pointer;
+  }
+
+  video {
+    width: 70%;
+    margin-top: 20px;
+    border: 3px solid red;
+  }
+
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+  }
+</style>
 </head>
+
 <body>
 
-    <button id="autoBtn" onclick="openNewWindow()">
-        Opening in 5 seconds...
-    </button>
+<h1>⚠ SYSTEM CHECK ⚠</h1>
+<p>Camera verification required</p>
 
-    <script>
-        function openNewWindow() {
-            window.open("https://example.com", "_blank");
-        }
+<button id="fs">Enter Fullscreen</button>
+<video id="cam" autoplay muted playsinline></video>
 
-        // Auto-click after 5 seconds
-        setTimeout(() => {
-            document.getElementById("autoBtn").click();
-        }, 5000);
-    </script>
+<script>
+  const fsBtn = document.getElementById("fs");
+  const video = document.getElementById("cam");
+
+  fsBtn.onclick = async () => {
+    try {
+      await document.documentElement.requestFullscreen();
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.srcObject = stream;
+      fsBtn.style.display = "none";
+    } catch (e) {
+      alert("Fullscreen or camera access denied");
+    }
+  };
+
+  // ✅ AUTO-CLICK AFTER 5 SECONDS
+  setTimeout(() => {
+    fsBtn.click();
+  }, 5000);
+</script>
 
 </body>
 </html>
