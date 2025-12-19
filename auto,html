@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto Click Button</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background: #ff3b3b;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ff1f1f;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="autoBtn" onclick="openNewWindow()">
+        Opening in 5 seconds...
+    </button>
+
+    <script>
+        function openNewWindow() {
+            window.open("https://example.com", "_blank");
+        }
+
+        // Auto-click after 5 seconds
+        setTimeout(() => {
+            document.getElementById("autoBtn").click();
+        }, 5000);
+    </script>
+
+</body>
+</html>
