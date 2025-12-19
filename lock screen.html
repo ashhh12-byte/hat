@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>System Check</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: red;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    video {
+      width: 60%;
+      border: 3px solid red;
+      margin-top: 20px;
+    }
+    h1 {
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0% {opacity: 1;}
+      50% {opacity: 0.3;}
+      100% {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  <h1>⚠ SYSTEM CHECK IN PROGRESS ⚠</h1>
+  <p>Camera verification required</p>
+  <video id="cam" autoplay></video>
+  <p>Press <b>ESC</b> to exit</p>
+
+  <script>
+    document.documentElement.requestFullscreen();
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        document.getElementById("cam").srcObject = stream;
+      })
+      .catch(() => {
+        alert("Camera access denied");
+      });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        document.exitFullscreen();
+        location.reload();
+      }
+    });
+  </script>
+</body>
+</html>
